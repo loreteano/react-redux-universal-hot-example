@@ -1,24 +1,26 @@
-import feathers from 'feathers';
-import morgan from 'morgan';
-import session from 'express-session';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import hooks from 'feathers-hooks';
-import rest from 'feathers-rest';
-import socketio from 'feathers-socketio';
-import isPromise from 'is-promise';
-import PrettyError from 'pretty-error';
-import config from './config';
-import middleware from './middleware';
-import services from './services';
-import * as actions from './actions';
-import { mapUrl } from './utils/url.js';
-import auth, { socketAuth } from './services/authentication';
+import feathers from 'feathers'
+import morgan from 'morgan'
+import session from 'express-session'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import hooks from 'feathers-hooks'
+import rest from 'feathers-rest'
+import socketio from 'feathers-socketio'
+import isPromise from 'is-promise'
+import PrettyError from 'pretty-error'
+import config from './config'
+import middleware from './middleware'
+import services from './services'
+import * as actions from './actions'
+import { mapUrl } from './utils/url.js'
+import auth, { socketAuth } from './services/authentication'
+import {sequelize} from './models'
+import Sequelize from 'sequelize'
 
-process.on('unhandledRejection', error => console.error(error));
+process.on('unhandledRejection', error => console.error(error))
 
-const pretty = new PrettyError();
-const app = feathers();
+const pretty = new PrettyError()
+const app = feathers()
 
 app.set('config', config)
   .use(morgan('dev'))
@@ -30,44 +32,44 @@ app.set('config', config)
     cookie: { maxAge: 60000 }
   }))
   .use(bodyParser.urlencoded({ extended: true }))
-  .use(bodyParser.json());
+  .use(bodyParser.json())
 
 const actionsHandler = (req, res, next) => {
-  const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
-  const { action, params } = mapUrl(actions, splittedUrlPath);
+  const splittedUrlPath = req.url.split('?')[0].split('/').slice(1)
+  const { action, params } = mapUrl(actions, splittedUrlPath)
 
-  req.app = app;
+  req.app = app
 
   const catchError = error => {
-    console.error('API ERROR:', pretty.render(error));
-    res.status(error.status || 500).json(error);
-  };
+    console.error('API ERROR:', pretty.render(error))
+    res.status(error.status || 500).json(error)
+  }
 
   if (action) {
     try {
-      const handle = action(req, params);
+      const handle = action(req, params)
       (isPromise(handle) ? handle : Promise.resolve(handle))
         .then(result => {
           if (result instanceof Function) {
-            result(res);
+            result(res)
           } else {
-            res.json(result);
+            res.json(result)
           }
         })
         .catch(reason => {
           if (reason && reason.redirect) {
-            res.redirect(reason.redirect);
+            res.redirect(reason.redirect)
           } else {
-            catchError(reason);
+            catchError(reason)
           }
         });
     } catch (error) {
-      catchError(error);
+      catchError(error)
     }
   } else {
-    next();
+    next()
   }
-};
+}
 
 app.configure(hooks())
   .configure(rest())
@@ -75,44 +77,45 @@ app.configure(hooks())
   .configure(auth)
   .use(actionsHandler)
   .configure(services)
-  .configure(middleware);
+  .configure(middleware)
 
 if (process.env.APIPORT) {
-  app.listen(process.env.APIPORT, err => {
-    if (err) {
-      console.error(err);
-    }
-    console.info('----\n==> 🌎  API is running on port %s', process.env.APIPORT);
-    console.info('==> 💻  Send requests to http://localhost:%s', process.env.APIPORT);
-  });
-} else {
-  console.error('==>     ERROR: No APIPORT environment variable has been specified');
-}
-
-const bufferSize = 100;
-const messageBuffer = new Array(bufferSize);
-let messageIndex = 0;
-
-app.io.use(socketAuth(app));
-
-app.io.on('connection', socket => {
-  const user = socket.feathers.user ? { ...socket.feathers.user, password: undefined } : undefined;
-  socket.emit('news', { msg: '\'Hello World!\' from server', user });
-
-  socket.on('history', () => {
-    for (let index = 0; index < bufferSize; index++) {
-      const msgNo = (messageIndex + index) % bufferSize;
-      const msg = messageBuffer[msgNo];
-      if (msg) {
-        socket.emit('msg', msg);
+  sequelize.sync({}).then(function () {
+    app.listen(process.env.APIPORT, err => {
+      if (err) {
+        console.error(err)
       }
-    }
-  });
+      console.info('----\n==> 🌎  API is running on port %s', process.env.APIPORT)
+      console.info('==> 💻  Send requests to http://localhost:%s', process.env.APIPORT)
+    })
+    const bufferSize = 100
+    const messageBuffer = new Array(bufferSize)
+    let messageIndex = 0
 
-  socket.on('msg', data => {
-    const message = { ...data, id: messageIndex };
-    messageBuffer[messageIndex % bufferSize] = message;
-    messageIndex++;
-    app.io.emit('msg', message);
-  });
-});
+    app.io.use(socketAuth(app))
+
+    app.io.on('connection', socket => {
+      const user = socket.feathers.user ? { ...socket.feathers.user, password: undefined } : undefined
+      socket.emit('news', { msg: '\'Hello World!\' from server', user })
+
+      socket.on('history', () => {
+        for (let index = 0; index < bufferSize; index++) {
+          const msgNo = (messageIndex + index) % bufferSize
+          const msg = messageBuffer[msgNo]
+          if (msg) {
+            socket.emit('msg', msg)
+          }
+        }
+      })
+
+      socket.on('msg', data => {
+        const message = { ...data, id: messageIndex }
+        messageBuffer[messageIndex % bufferSize] = message
+        messageIndex++
+        app.io.emit('msg', message)
+      })
+    })
+  })
+} else {
+  console.error('==>     ERROR: No APIPORT environment variable has been specified')
+}
