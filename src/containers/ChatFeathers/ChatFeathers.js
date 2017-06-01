@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { asyncConnect } from 'redux-connect';
-import { connect } from 'react-redux';
-import { withApp } from 'app';
-import * as chatActions from 'redux/modules/chat';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { asyncConnect } from 'redux-connect'
+import { connect } from 'react-redux'
+import { withApp } from 'app'
+import * as chatActions from 'redux/modules/chat'
 
 @asyncConnect([{
   promise: ({ store: { dispatch, getState } }) => {
-    const state = getState();
+    const state = getState()
 
     if (state.online) {
-      return dispatch(chatActions.load());
+      return dispatch(chatActions.load())
     }
   }
 }])
@@ -23,7 +23,6 @@ import * as chatActions from 'redux/modules/chat';
 )
 @withApp
 export default class ChatFeathers extends Component {
-
   static propTypes = {
     app: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
@@ -36,30 +35,30 @@ export default class ChatFeathers extends Component {
     error: null
   };
 
-  componentDidMount() {
-    this.props.app.service('messages').on('created', this.props.addMessage);
+  componentDidMount () {
+    this.props.app.service('messages').on('created', this.props.addMessage)
   }
 
-  componentWillUnmount() {
-    this.props.app.service('messages').removeListener('created', this.props.addMessage);
+  componentWillUnmount () {
+    this.props.app.service('messages').removeListener('created', this.props.addMessage)
   }
 
   handleSubmit = event => {
-    event.preventDefault();
+    event.preventDefault()
     this.props.app.service('messages').create({ text: this.state.message })
       .then(() => this.setState({ message: '', error: false }))
       .catch(error => {
-        console.log(error);
-        this.setState({ error: error.message || false });
-      });
+        console.log(error)
+        this.setState({ error: error.message || false })
+      })
   }
 
-  render() {
-    const { user, messages } = this.props;
-    const { error } = this.state;
+  render () {
+    const { user, messages } = this.props
+    const { error } = this.state
 
     return (
-      <div className="container">
+      <div className='container'>
         <h1>Chat</h1>
 
         {user && <div>
@@ -68,18 +67,18 @@ export default class ChatFeathers extends Component {
           </ul>
           <form onSubmit={this.handleSubmit}>
             <input
-              type="text"
-              ref={c => { this.message = c; }}
-              placeholder="Enter your message"
+              type='text'
+              ref={c => { this.message = c }}
+              placeholder='Enter your message'
               value={this.state.message}
               onChange={event => this.setState({ message: event.target.value })}
             />
-            <button className="btn" onClick={this.handleSubmit}>Send</button>
-            {error && <div className="text-danger">{error}</div>}
+            <button className='btn' onClick={this.handleSubmit}>Send</button>
+            {error && <div className='text-danger'>{error}</div>}
           </form>
         </div>
         }
       </div>
-    );
+    )
   }
 }

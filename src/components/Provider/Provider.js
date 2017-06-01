@@ -1,29 +1,29 @@
-import { Component, Children } from 'react';
-import PropTypes from 'prop-types';
+import { Component, Children } from 'react'
+import PropTypes from 'prop-types'
 
-let didWarnAboutReceivingStore = false;
+let didWarnAboutReceivingStore = false
 
-function warning(message) {
+function warning (message) {
   /* eslint-disable no-console */
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
-    console.error(message);
+    console.error(message)
   }
   /* eslint-enable no-console */
   try {
     // This error was thrown as a convenience so that if you enable
     // "break on all exceptions" in your console,
     // it would pause the execution at this line.
-    throw new Error(message);
+    throw new Error(message)
     /* eslint-disable no-empty */
   } catch (e) {}
   /* eslint-enable no-empty */
 }
 
-function warnAboutReceivingStore() {
+function warnAboutReceivingStore () {
   if (didWarnAboutReceivingStore) {
-    return;
+    return
   }
-  didWarnAboutReceivingStore = true;
+  didWarnAboutReceivingStore = true
 
   warning(
     '<Provider> does not support changing `store` on the fly. ' +
@@ -31,7 +31,7 @@ function warnAboutReceivingStore() {
     'Redux 2.x and React Redux 2.x which no longer hot reload reducers ' +
     'automatically. See https://github.com/reactjs/react-redux/releases/' +
     'tag/v2.0.0 for the migration instructions.'
-  );
+  )
 }
 
 export default class Provider extends Component {
@@ -58,38 +58,38 @@ export default class Provider extends Component {
       trySubscribe: PropTypes.func.isRequired,
       tryUnsubscribe: PropTypes.func.isRequired,
       notifyNestedSubs: PropTypes.func.isRequired,
-      isSubscribed: PropTypes.func.isRequired,
+      isSubscribed: PropTypes.func.isRequired
     })
   };
 
-  constructor(props, context) {
-    super(props, context);
-    this.store = props.store;
-    this.app = props.app;
-    this.restApp = props.restApp;
+  constructor (props, context) {
+    super(props, context)
+    this.store = props.store
+    this.app = props.app
+    this.restApp = props.restApp
   }
 
-  getChildContext() {
+  getChildContext () {
     return {
       store: this.store,
       storeSubscription: null,
       app: this.app,
-      restApp: this.restApp,
-    };
+      restApp: this.restApp
+    }
   }
 
   componentWillReceiveProps = nextProps => {
     if (process.env.NODE_ENV !== 'production') {
-      const { store } = this;
-      const { store: nextStore } = nextProps;
+      const { store } = this
+      const { store: nextStore } = nextProps
 
       if (store !== nextStore) {
-        warnAboutReceivingStore();
+        warnAboutReceivingStore()
       }
     }
   }
 
-  render() {
-    return Children.only(this.props.children);
+  render () {
+    return Children.only(this.props.children)
   }
 }

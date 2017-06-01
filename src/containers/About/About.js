@@ -1,35 +1,34 @@
-import React, { Component } from 'react';
-import Helmet from 'react-helmet';
-import MiniInfoBar from 'components/MiniInfoBar/MiniInfoBar';
-import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info';
-import { asyncConnect } from 'redux-connect';
+import React, { Component } from 'react'
+import Helmet from 'react-helmet'
+import MiniInfoBar from 'components/MiniInfoBar/MiniInfoBar'
+import { isLoaded as isInfoLoaded, load as loadInfo } from 'redux/modules/info'
+import { asyncConnect } from 'redux-connect'
 
 @asyncConnect([{
   promise: ({ store: { dispatch, getState } }) => (!isInfoLoaded(getState()) ? dispatch(loadInfo()) : Promise.resolve())
 }])
 export default class About extends Component {
-
   state = {
     showKitten: false
   }
 
   handleToggleKitten = () => this.setState({ showKitten: !this.state.showKitten });
 
-  render() {
-    const { showKitten } = this.state;
-    const kitten = require('./kitten.jpg');
+  render () {
+    const { showKitten } = this.state
+    const kitten = require('./kitten.jpg')
     return (
-      <div className="container">
+      <div className='container'>
         <h1>About Us</h1>
-        <Helmet title="About Us" />
+        <Helmet title='About Us' />
 
         <p>This project was originally created by Erik Rasmussen
-          (<a href="https://twitter.com/erikras" target="_blank" rel="noopener noreferrer">@erikras</a>), but has since
+          (<a href='https://twitter.com/erikras' target='_blank' rel='noopener noreferrer'>@erikras</a>), but has since
           seen many contributions from the open source community. Thank you to{' '}
           <a
-            href="https://github.com/erikras/react-redux-universal-hot-example/graphs/contributors"
-            target="_blank"
-            rel="noopener noreferrer"
+            href='https://github.com/erikras/react-redux-universal-hot-example/graphs/contributors'
+            target='_blank'
+            rel='noopener noreferrer'
           >
             all the contributors
           </a>.
@@ -56,8 +55,8 @@ export default class About extends Component {
             {showKitten ? 'No! Take it away!' : 'Yes! Please!'}</button>
         </p>
 
-        {showKitten && <div><img src={kitten} alt="kitchen" /></div>}
+        {showKitten && <div><img src={kitten} alt='kitchen' /></div>}
       </div>
-    );
+    )
   }
 }

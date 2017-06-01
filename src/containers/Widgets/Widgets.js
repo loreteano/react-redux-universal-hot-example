@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
-import * as widgetActions from 'redux/modules/widgets';
-import WidgetForm from 'components/WidgetForm/WidgetForm';
-import { asyncConnect } from 'redux-connect';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Helmet from 'react-helmet'
+import { connect } from 'react-redux'
+import * as widgetActions from 'redux/modules/widgets'
+import WidgetForm from 'components/WidgetForm/WidgetForm'
+import { asyncConnect } from 'redux-connect'
 
-const { isLoaded, load: loadWidgets } = widgetActions;
+const { isLoaded, load: loadWidgets } = widgetActions
 
 @asyncConnect([{
   deferred: true,
   promise: ({ store: { dispatch, getState } }) => {
     if (!isLoaded(getState())) {
-      return dispatch(loadWidgets());
+      return dispatch(loadWidgets())
     }
   }
 }])
@@ -40,13 +40,13 @@ export default class Widgets extends Component {
     loading: false
   }
 
-  render() {
+  render () {
     const handleEdit = widget => {
-      const { editStart } = this.props;
-      return () => editStart(String(widget.id));
-    };
-    const { widgets, error, editing, loading, load } = this.props;
-    const styles = require('./Widgets.scss');
+      const { editStart } = this.props
+      return () => editStart(String(widget.id))
+    }
+    const { widgets, error, editing, loading, load } = this.props
+    const styles = require('./Widgets.scss')
     return (
       <div className={`${styles.widgets} container`}>
         <h1>
@@ -55,7 +55,7 @@ export default class Widgets extends Component {
             <i className={`fa fa-refresh ${loading ? ' fa-spin' : ''}`} />{' '}Reload Widgets
           </button>
         </h1>
-        <Helmet title="Widgets" />
+        <Helmet title='Widgets' />
         <p>
           If you hit refresh on your browser, the data loading will take place on the server before the page is
           returned.
@@ -67,32 +67,32 @@ export default class Widgets extends Component {
         <p>
           This widgets are stored in your session, so feel free to edit it and refresh.
         </p>
-        {error && <div className="alert alert-danger" role="alert">
-          <span className="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>{' '}{error}
+        {error && <div className='alert alert-danger' role='alert'>
+          <span className='glyphicon glyphicon-exclamation-sign' aria-hidden='true' />{' '}{error}
         </div>}
-        {widgets && widgets.length && <table className="table table-striped">
+        {widgets && widgets.length && <table className='table table-striped'>
           <thead>
             <tr>
               <th className={styles.idCol}>ID</th>
               <th className={styles.colorCol}>Color</th>
               <th className={styles.sprocketsCol}>Sprockets</th>
               <th className={styles.ownerCol}>Owner</th>
-              <th className={styles.buttonCol}></th>
+              <th className={styles.buttonCol} />
             </tr>
           </thead>
           <tbody>
             {
               /* eslint-disable react/jsx-indent */
-              widgets.map(widget => (editing[widget.id] ?
-                <WidgetForm form={String(widget.id)} key={String(widget.id)} initialValues={widget} /> :
-                <tr key={widget.id}>
+              widgets.map(widget => (editing[widget.id]
+                ? <WidgetForm form={String(widget.id)} key={String(widget.id)} initialValues={widget} />
+                : <tr key={widget.id}>
                   <td className={styles.idCol}>{widget.id}</td>
                   <td className={styles.colorCol}>{widget.color}</td>
                   <td className={styles.sprocketsCol}>{widget.sprocketCount}</td>
                   <td className={styles.ownerCol}>{widget.owner}</td>
                   <td className={styles.buttonCol}>
-                    <button className="btn btn-primary" onClick={handleEdit(widget)}>
-                      <i className="fa fa-pencil" /> Edit
+                    <button className='btn btn-primary' onClick={handleEdit(widget)}>
+                      <i className='fa fa-pencil' /> Edit
                     </button>
                   </td>
                 </tr>)
@@ -102,7 +102,6 @@ export default class Widgets extends Component {
           </tbody>
         </table>}
       </div>
-    );
+    )
   }
 }
-

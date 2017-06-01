@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import Helmet from 'react-helmet';
-import { initialize } from 'redux-form';
-import SurveyForm from 'components/SurveyForm/SurveyForm';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import Helmet from 'react-helmet'
+import { initialize } from 'redux-form'
+import SurveyForm from 'components/SurveyForm/SurveyForm'
 
 @connect(
   () => ({}),
@@ -14,8 +14,8 @@ export default class Survey extends Component {
   }
 
   handleSubmit = data => {
-    window.alert(`Data submitted! ${JSON.stringify(data)}`);
-    this.props.initialize('survey', {});
+    window.alert(`Data submitted! ${JSON.stringify(data)}`)
+    this.props.initialize('survey', {})
   }
 
   handleInitialize = () => {
@@ -25,14 +25,14 @@ export default class Survey extends Component {
       occupation: 'Redux Wizard',
       currentlyEmployed: true,
       sex: 'male'
-    });
+    })
   }
 
-  render() {
+  render () {
     return (
-      <div className="container">
+      <div className='container'>
         <h1>Survey</h1>
-        <Helmet title="Survey" />
+        <Helmet title='Survey' />
 
         <p>
           This is an example of a form in redux in which all the state is kept within the redux store.
@@ -61,8 +61,8 @@ export default class Survey extends Component {
         </p>
 
         <div style={{ textAlign: 'center', margin: 15 }}>
-          <button className="btn btn-primary" onClick={this.handleInitialize}>
-            <i className="fa fa-pencil" /> Initialize Form
+          <button className='btn btn-primary' onClick={this.handleInitialize}>
+            <i className='fa fa-pencil' /> Initialize Form
           </button>
         </div>
 
@@ -73,6 +73,6 @@ export default class Survey extends Component {
 
         <SurveyForm onSubmit={this.handleSubmit} />
       </div>
-    );
+    )
   }
 }

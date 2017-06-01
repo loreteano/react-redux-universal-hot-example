@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { reduxForm, Field } from 'redux-form';
-import { connect } from 'react-redux';
-import { isValidEmail } from 'redux/modules/survey';
-import surveyValidation from './surveyValidation';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { reduxForm, Field } from 'redux-form'
+import { connect } from 'react-redux'
+import { isValidEmail } from 'redux/modules/survey'
+import surveyValidation from './surveyValidation'
 
-function asyncValidate(data, dispatch) {
-  if (!data.email) return Promise.resolve();
-  return dispatch(isValidEmail(data));
+function asyncValidate (data, dispatch) {
+  if (!data.email) return Promise.resolve()
+  return dispatch(isValidEmail(data))
 }
 
 /* eslint-disable react/prop-types */
@@ -16,20 +16,20 @@ const Input = ({
   meta: { touched, error, dirty, active, visited, asyncValidating }
 }) => (
   <div className={`form-group ${error && touched ? 'has-error' : ''}`}>
-    <label htmlFor={input.name} className="col-sm-2">{label}</label>
+    <label htmlFor={input.name} className='col-sm-2'>{label}</label>
     <div className={`col-sm-8 ${styles.inputGroup}`}>
       {showAsyncValidating && asyncValidating && <i className={`fa fa-cog fa-spin ${styles.cog}`} />}
       <input {...input} type={type} className={className} id={input.name} />
-      {error && touched && <div className="text-danger">{error}</div>}
+      {error && touched && <div className='text-danger'>{error}</div>}
       <div className={styles.flags}>
-        {dirty && <span className={styles.dirty} title="Dirty">D</span>}
-        {active && <span className={styles.active} title="Active">A</span>}
-        {visited && <span className={styles.visited} title="Visited">V</span>}
-        {touched && <span className={styles.touched} title="Touched">T</span>}
+        {dirty && <span className={styles.dirty} title='Dirty'>D</span>}
+        {active && <span className={styles.active} title='Active'>A</span>}
+        {visited && <span className={styles.visited} title='Visited'>V</span>}
+        {touched && <span className={styles.touched} title='Touched'>T</span>}
       </div>
     </div>
   </div>
-);
+)
 /* eslint-enable react/prop-types */
 
 @reduxForm({
@@ -63,7 +63,7 @@ class SurveyForm extends Component {
     active: null
   }
 
-  render() {
+  render () {
     const {
       asyncValidating,
       dirty,
@@ -73,67 +73,67 @@ class SurveyForm extends Component {
       reset,
       pristine,
       valid
-    } = this.props;
-    const styles = require('./SurveyForm.scss');
+    } = this.props
+    const styles = require('./SurveyForm.scss')
 
     return (
       <div>
-        <form className="form-horizontal" onSubmit={handleSubmit}>
+        <form className='form-horizontal' onSubmit={handleSubmit}>
           <Field
-            name="name"
-            type="text"
+            name='name'
+            type='text'
             component={Input}
-            label="Full Name"
-            className="form-control"
+            label='Full Name'
+            className='form-control'
             styles={styles}
           />
 
           <Field
-            name="email"
-            type="text"
+            name='email'
+            type='text'
             component={Input}
-            label="Email"
-            className="form-control"
+            label='Email'
+            className='form-control'
             styles={styles}
             asyncValidating={asyncValidating}
           />
 
           <Field
-            name="occupation"
-            type="text"
+            name='occupation'
+            type='text'
             component={Input}
-            label="Occupation"
-            className="form-control"
+            label='Occupation'
+            className='form-control'
             styles={styles}
           />
 
           <Field
-            name="currentlyEmployed"
-            type="checkbox"
+            name='currentlyEmployed'
+            type='checkbox'
             component={Input}
-            label="Currently Employed?"
+            label='Currently Employed?'
             styles={styles}
           />
 
-          <div className="form-group">
-            <label className="col-sm-2" htmlFor="sex">Sex</label>
-            <div className="col-sm-8">
-              <label htmlFor="sex-male" className={styles.radioLabel}>
-                <Field name="sex" component="input" type="radio" id="sex-male" value="male" /> Male
+          <div className='form-group'>
+            <label className='col-sm-2' htmlFor='sex'>Sex</label>
+            <div className='col-sm-8'>
+              <label htmlFor='sex-male' className={styles.radioLabel}>
+                <Field name='sex' component='input' type='radio' id='sex-male' value='male' /> Male
               </label>
-              <label htmlFor="sex-female" className={styles.radioLabel}>
-                <Field name="sex" component="input" type="radio" id="sex-female" value="female" /> Female
+              <label htmlFor='sex-female' className={styles.radioLabel}>
+                <Field name='sex' component='input' type='radio' id='sex-female' value='female' /> Female
               </label>
             </div>
           </div>
 
-          <div className="form-group">
-            <div className="col-sm-offset-2 col-sm-10">
-              <button className="btn btn-success" onClick={handleSubmit}>
-                <i className="fa fa-paper-plane" /> Submit
+          <div className='form-group'>
+            <div className='col-sm-offset-2 col-sm-10'>
+              <button className='btn btn-success' onClick={handleSubmit}>
+                <i className='fa fa-paper-plane' /> Submit
               </button>
-              <button className="btn btn-warning" type="button" onClick={reset} style={{ marginLeft: 15 }}>
-                <i className="fa fa-undo" /> Reset
+              <button className='btn btn-warning' type='button' onClick={reset} style={{ marginLeft: 15 }}>
+                <i className='fa fa-undo' /> Reset
               </button>
             </div>
           </div>
@@ -141,7 +141,7 @@ class SurveyForm extends Component {
 
         <h4>Props from redux-form</h4>
 
-        <table className="table table-striped">
+        <table className='table table-striped'>
           <tbody>
             <tr>
               <th>Active Field</th>
@@ -166,6 +166,6 @@ class SurveyForm extends Component {
           </tbody>
         </table>
       </div>
-    );
+    )
   }
 }
